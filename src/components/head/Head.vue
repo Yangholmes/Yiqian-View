@@ -56,7 +56,6 @@ export default {
     },
     methods: {
         jet() {
-            console.log('hhh');
             this.$emit('modified', {
                 title: this.title,
                 tags: this.tags,
@@ -94,7 +93,7 @@ export default {
             outline: none;
             border: none;
             border-bottom: 1px solid rgba(0, 0, 0, 0);
-            font-size: 1em;
+            font-size: 1.25em;
             line-height: 1.5;
             &:focus {
                 border-bottom: 1px solid #bbb;
@@ -111,6 +110,7 @@ export default {
     .cover {
         grid-area: c;
         padding: 12px 15px;
+        justify-content: flex-end;
     }
 }
 </style>

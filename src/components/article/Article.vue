@@ -70,7 +70,7 @@ export default {
     .ql {
         &-toolbar {
             border: none;
-            border-bottom: 1px solid #ccc;
+            border-bottom: 1px solid @borderColor;
         }
         &-container {
             height: calc( 100% - 42px );

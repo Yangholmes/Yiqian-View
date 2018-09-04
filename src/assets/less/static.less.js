@@ -3,5 +3,6 @@ module.exports = {
     successColor: '#84E84C',
     warningColor: '#FFFB7A',
     errorColor: '#E85B4E',
-    addColor: '#FF9653'
+    addColor: '#FF9653',
+    borderColor: '#ccc'
 };

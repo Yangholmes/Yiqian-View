@@ -114,7 +114,7 @@ export default {
         border-radius: @addSize;
         background: @addColor;
         position: relative;
-        filter: drop-shadow(0 0 5px #ccc);
+        filter: drop-shadow(0 0 5px @borderColor);
         @stickWidth: 55%;
         @stickHeight: .3em;
 

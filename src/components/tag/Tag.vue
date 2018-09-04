@@ -4,9 +4,9 @@
             <li onselectstart="return false;"
                 :class="{'delete': tagShake}"
                 v-for="(tag, index) in tags" :key="tag"
-                @touchstart="onTouchstart(index)"
+                @touchstart="onTouchstart"
                 @touchmove="onTouchmove"
-                @touchend="onTouchend">
+                @touchend="onTouchend(index)">
                 <span>{{tag}}</span>
             </li>
             <li>
@@ -42,6 +42,7 @@ export default {
             tag: '',
             hold: null,
             tagShake: false,
+            deleteTagEnable: false,
             stop: null
         };
     },
@@ -49,33 +50,37 @@ export default {
         this.tags = this.value || [];
     },
     methods: {
-        onTouchstart(index) {
-            if (this.tagShake) {
-                window.setTimeout(() => {
-                    this.tags.splice(index, 1);
-                    this.jet();
-                }, 350);
-                this.stopShaking();
-            }
-            else {
+        onTouchstart() {
+            if (!this.tagShake) {
                 this.hold = window.setTimeout(() => {
                     this.tagShake = true;
+                    this.deleteTagEnable = false;
                     this.stopShaking();
                 }, 700);
             }
         },
         onTouchmove() {
             this.hold && window.clearTimeout(this.hold);
+            this.deleteTagEnable = false;
+            this.stopShaking();
         },
-        onTouchend() {
+        onTouchend(index) {
             this.hold && window.clearTimeout(this.hold);
+            if (this.tagShake && this.deleteTagEnable) {
+                this.tags.splice(index, 1);
+                this.jet();
+                this.stopShaking();
+            }
+            this.deleteTagEnable = true;
         },
         onEnter(e) {
             switch (e.keyCode) {
                 case 8:
                     break;
                 case 13:
-                    (this.tags.findIndex(e => e === this.tag) === -1) && this.tags.push(this.tag); // 防止内容重复的 tag
+                    this.tag = this.tag.trim();
+                    this.tag && (this.tags.findIndex(e => e === this.tag) === -1)
+                        && this.tags.push(this.tag); // 防止内容重复的 tag
                     this.tag = '';
                     this.jet();
                     break;
@@ -130,10 +135,11 @@ export default {
             display: flex;
             align-items: center;
             justify-content: center;
+
             &:last-child {
                 margin-right: 0;
                 color: #000;
-                border: 1px dashed #ccc;
+                border: 1px dashed @borderColor;
             }
         }
         li {
@@ -146,16 +152,16 @@ export default {
             @keyframes shake
             {
                 0% {
-                    transform: rotate(-5deg);
+                    transform: translateX(-2px) rotate(-5deg);
                 }
                 25% {
-                    transform: rotate(0deg);
+                    transform: translateX(0px) rotate(0deg);
                 }
                 50% {
-                    transform: rotate(5deg);
+                    transform: translateX(2px) rotate(5deg);
                 }
                 100% {
-                    transform: rotate(0deg);
+                    transform: translateX(0px) rotate(0deg);
                 }
             }
             span {

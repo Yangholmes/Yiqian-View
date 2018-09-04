@@ -3,17 +3,20 @@
     <div id="qian">
         <Head class="head" v-model="head"></Head>
         <Article class="article" v-model="article"></Article>
+        <Toolbar class="toolbar"></Toolbar>
     </div>
 </template>
 
 <script>
 import Head from 'cpn/head/Head';
 import Article from 'cpn/article/Article';
+import Toolbar from 'cpn/toolbar/newQian';
 
 export default {
     components: {
         Head,
-        Article
+        Article,
+        Toolbar
     },
     data() {
         return {
@@ -27,6 +30,7 @@ export default {
 <style lang="less">
 #qian {
     @headHeight: 6em;
+    @toolbarHeight: 2.5em;
     width: 100%;
     height: 100%;
     .head {
@@ -35,7 +39,11 @@ export default {
     }
     .article {
         width: 100%;
-        height: calc( 100% - @headHeight);
+        height: calc( 100% - @headHeight - @toolbarHeight);
+    }
+    .toolbar {
+        width: 100%;
+        height: @toolbarHeight;
     }
 }
 </style>

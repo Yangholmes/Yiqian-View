@@ -107,13 +107,13 @@ export default {
 .main-img {
     // width: 100%;
     // height: 100%;
-    margin: auto;
+    // margin: auto;
     overflow: hidden;
     display: flex;
     justify-content: center;
     align-items: center;
     position: relative;
-    border: 1px dashed #ccc;
+    border: 1px dashed @borderColor;
     border-radius: 5px;
 
     .no-img {
