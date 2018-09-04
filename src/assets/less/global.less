@@ -1,0 +1,55 @@
+@import "./fonts.less";
+
+html {
+    // 基准字体
+    font-family: FZHTJW, sans-serif;
+    // 基准字体不加粗
+    font-weight: 400; // 400 is `normal`, 700 is `bold`
+
+    // 基准字体大小为16px
+    font-size: 16px;
+
+    // 背景色为白色
+    background: #fff;
+
+    // 自定义滚动条
+    // 仅限Webkit内核
+    &,
+    & * {
+        &::-webkit-scrollbar {
+            width: 0;
+            height: 0;
+            background: rgba(0, 0, 0, 0);
+        }
+    }
+
+    // 设置宽高为视野宽高
+    &,
+    body {
+        width: 100%;
+        height: 100%;
+
+        margin: 0;
+        padding: 0;
+    }
+
+    // 盒子模型选用border-box
+    *,
+    *:before,
+    *:after {
+        box-sizing: border-box;
+        border-collapse: collapse;
+    }
+
+    // form 样式
+    input {
+        // 基准字体
+        font-family: FZHTJW, sans-serif;
+        // 基准字体不加粗
+        font-weight: 400; // 400 is `normal`, 700 is `bold`
+        // 基准字体大小为16px
+        font-size: 16px;
+
+        padding: 0;
+    }
+}
