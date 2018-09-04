@@ -1,7 +1,7 @@
 echo deploying...
 
-xcopy .\dist ..\www /c /e /y
+xcopy .\dist ..\framework\www /c /e /y
 
-cd ..
+cd ..\framework
 
 cordova build android

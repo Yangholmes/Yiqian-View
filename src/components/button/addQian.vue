@@ -1,9 +1,10 @@
 <template lang="html">
     <div class="add-qian"
+        :class="{'hide': hide}"
+        :style="`transform: translateX(${delta.x}px) translateY(${delta.y}px) scaleX(${hide ? 0 : 1}) scaleY(${hide ? 0 : 1})`"
         @touchstart="onStart($event)"
         @touchmove="onMove($event)"
-        @touchend="onEnd($event)"
-        :style="`transform: translateX(${delta.x}px) translateY(${delta.y}px)`">
+        @touchend="onEnd($event)">
         <span></span>
     </div>
 </template>
@@ -12,6 +13,16 @@
 export default {
     props: {
         position: {x: 0, y: 0}
+    },
+    watch: {
+        '$route'(to) {
+            if (to.name === 'newQian') {
+                this.hide = true;
+            }
+            else {
+                this.hide = false;
+            }
+        }
     },
     computed: {
         screenSize() {
@@ -29,6 +40,7 @@ export default {
     },
     data() {
         return {
+            hide: false,
             moveEnable: false,
             clickEnable: true,
             originalPosition: {x: 0, y: 0},
@@ -68,7 +80,7 @@ export default {
         onEnd(e) {
             e.preventDefault();
             if (this.clickEnable) {
-                this.$router.push('qian');
+                this.$router.push('newQian');
             }
             else {
                 this.clickEnable =true;
@@ -91,6 +103,10 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
+    &.hide {
+        transition: transform .2s;
+    }
+
     span {
         width: 100%;
         height: 100%;
@@ -98,8 +114,7 @@ export default {
         border-radius: @addSize;
         background: @addColor;
         position: relative;
-        filter: drop-shadow(0 0 3px #ccc);
-        opacity: .9;
+        filter: drop-shadow(0 0 5px #ccc);
         @stickWidth: 55%;
         @stickHeight: .3em;
 

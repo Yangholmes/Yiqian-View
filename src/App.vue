@@ -1,12 +1,12 @@
 <template>
     <div id="app">
         <router-view></router-view>
-        <addQian :position="position"></addQian>
+        <addQian :position="{x: 0, y: -32}"></addQian>
     </div>
 </template>
 
 <script>
-import addQian from 'cpn/addQian/addQian';
+import addQian from 'cpn/button/addQian';
 
 export default {
     name: 'app',
@@ -14,9 +14,7 @@ export default {
         addQian
     },
     data() {
-        return {
-            position: {x: 0, y: -32}
-        };
+        return {};
     },
     methods: {
 

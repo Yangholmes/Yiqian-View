@@ -14,7 +14,7 @@ export default [{
     name: 'home',
     component: () => import('pages/home/Home')
 }, {
-    path: '/qian',
-    name: 'qian',
-    component: () => import('pages/qian/Qian')
+    path: '/newQian',
+    name: 'newQian',
+    component: () => import('pages/qian/NewQian')
 }];
