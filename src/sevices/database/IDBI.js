@@ -1,0 +1,100 @@
+/**
+ * IndexedDB Interface
+ *
+ * How to...
+ * 1. Open a database.
+ * 2. Create an object store in the database.
+ * 3. Start a transaction and make a request to do some database operation, like adding or retrieving data.
+ * 4. Wait for the operation to complete by listening to the right kind of DOM event.
+ * 5. Do something with the results (which can be found on the request object).
+ *
+ * @file
+ * @author Yangholmes
+ */
+class IDBI {
+    construct(name = '', config = {}) {
+        this.name = name.constructor === String ? name : '';
+        this.config = config.constructor === Object ? config : '';
+        this.initDb();
+    }
+
+    initDb() {
+        this.dbInstance = null;
+        this.store = (this.config.store && this.config.store.constructor === String) ? this.config.store : '';
+        this.indexs = (this.config.indexs && this.config.indexs.constructor === Array) ? this.config.indexs : [];
+        this.version = (this.config.version && this.config.version.constructor === Number) ? this.config.version : 1;
+    }
+
+    compatibility() {
+        window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
+        if (!window.indexedDB) {
+            console.error('Your browser do not support indexedDB');
+            return false;
+        }
+        else {
+            console.debug('indexedDB is ready');
+            return true;
+        }
+    }
+
+    openIndexedDb() {
+        return new Promise((resolve, reject) => {
+            !this.compatibility() && reject({
+                code: -1,
+                msg: '浏览器不支持indexedDB，无法存储数据',
+                data: {}
+            });
+
+            let DBOpenRequest = window.indexedDB.open(this.name, this.version);
+
+            DBOpenRequest.onsuccess = event => {
+                this.db = DBOpenRequest.result;
+                resolve(event);
+            };
+            DBOpenRequest.onupgradeneeded = event => {
+                this.db = event.target.result;
+                if (!this.db.objectStoreNames.contains(this.store)) {
+                    let store = this.db.createObjectStore(this.store, {
+                        keyPath: 'id',
+                        autoIncrement: true
+                    });
+                    this.indexs.forEach(e => {
+                        store.createIndex(e.key, e.key, {
+                            unique: e.unique
+                        });
+                    });
+                }
+            };
+            DBOpenRequest.onerror = event => {
+                reject(event);
+            };
+        });
+    }
+
+    setStore(store) {
+        this.store = (store && store.constructor === String) ? store : '';
+    }
+
+    insertData(data) {
+        return new Promise((resolve, reject) => {
+            this.openIndexedDb()
+                .then(res => {
+                    let tx = yangDb.db.transaction(this.store, 'readwrite'),
+                        store = tx.objectStore(this.store),
+                        req = store.add(data);
+
+                    req.onsuccess = event => {
+                        resolve(event);
+                    };
+                    req.onerror = event => {
+                        reject(event);
+                    };
+                })
+                .catch(error => {
+                    reject(error);
+                });
+        });
+    }
+}
+
+export default IDBI;

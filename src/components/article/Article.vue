@@ -76,7 +76,7 @@ export default {
             height: calc( 100% - 42px );
             font-size: 1em;
             border: none;
-            font-family: FZHTJW, sans-serif;
+            font-family: @fontFamily;
             font-weight: 400;
             img {
                 display: block;

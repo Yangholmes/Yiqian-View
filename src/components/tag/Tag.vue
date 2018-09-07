@@ -171,6 +171,7 @@ export default {
             }
             input {
                 width: 5em;
+                font-size: .95em;
                 border: none;
                 outline: none;
             }

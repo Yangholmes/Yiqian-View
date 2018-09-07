@@ -24,7 +24,7 @@ export default {
 .flat-button {
     min-width: 2em;
     width: auto;
-    height: 2.5em;
+    height: 3em;
     font-size: 1em;
     padding: .25em .5em;
     display: flex;
