@@ -28,6 +28,8 @@ module.exports = {
     },
     chainWebpack: config => {
         config.resolve.alias
+            .set('api', resolve('src/api'))
+            .set('utils', resolve('src/utils'))
             .set('cpn', resolve('src/components'))
             .set('pages', resolve('src/pages'));
     }

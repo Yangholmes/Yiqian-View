@@ -20,10 +20,10 @@ export default {
     },
     methods: {
         onCancel() {
-            this.$router.go(-1);
+            this.$emit('onCancel');
         },
         onSubmit() {
-            console.log('hhh');
+            this.$emit('onSubmit');
         }
     }
 };

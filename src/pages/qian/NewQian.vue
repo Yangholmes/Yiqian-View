@@ -4,7 +4,10 @@
         <div id="qian">
             <Head class="head" v-model="head"></Head>
             <Article class="article" v-model="article"></Article>
-            <Toolbar class="toolbar"></Toolbar>
+            <Toolbar class="toolbar"
+                @onCancel="onCancel"
+                @onSubmit="onSubmit"
+            ></Toolbar>
         </div>
     </transition>
 </template>
@@ -13,6 +16,8 @@
 import Head from 'cpn/head/Head';
 import Article from 'cpn/article/Article';
 import Toolbar from 'cpn/toolbar/newQian';
+import api from 'api';
+import factory from 'utils/factory';
 
 export default {
     components: {
@@ -22,9 +27,26 @@ export default {
     },
     data() {
         return {
+            aId: factory.genId(),
             head: {},
             article: ''
         };
+    },
+    methods: {
+        onCancel() {
+            this.$router.go(-1);
+        },
+        onSubmit() {
+            api.addNewQian({
+                aId: this.aId,
+                title: this.head.title,
+                tags: this.head.tags,
+                mainImg: this.head.mainImg,
+                article: this.article
+            }).then(res => {
+                console.log(res);
+            });
+        }
     }
 };
 </script>
