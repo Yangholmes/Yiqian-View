@@ -15,7 +15,9 @@
 <script>
 import Head from 'cpn/head/Head';
 import Article from 'cpn/article/Article';
-import Toolbar from 'cpn/toolbar/newQian';
+import Toolbar from 'cpn/toolbar/NewQian';
+import MessageBox from 'cpn/messageBox';
+
 import api from 'api';
 import factory from 'utils/factory';
 
@@ -42,7 +44,8 @@ export default {
                 title: this.head.title,
                 tags: this.head.tags,
                 mainImg: this.head.mainImg,
-                article: this.article
+                article: this.article,
+                createDate: new Date().getTime()
             }).then(res => {
                 console.log(res);
             });
@@ -57,6 +60,7 @@ export default {
     @toolbarHeight: 3em;
     width: 100%;
     height: 100%;
+    will-change: transform;
     .head {
         width: 100%;
         height: @headHeight;
@@ -91,7 +95,7 @@ export default {
         transition: all .5s cubic-bezier(0, 0, 0.7, 1.3);
     }
     &-leave-active {
-        transition: all .5s linear;
+        // transition: all .5s linear;
     }
 }
 </style>

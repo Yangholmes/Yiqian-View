@@ -50,7 +50,7 @@ class IDBI {
 
             DBOpenRequest.onsuccess = event => {
                 this.db = DBOpenRequest.result;
-                resolve(event);
+                resolve(this.db);
             };
             DBOpenRequest.onupgradeneeded = event => {
                 this.db = event.target.result;
@@ -79,7 +79,7 @@ class IDBI {
     insertData(data) {
         return new Promise((resolve, reject) => {
             this.openIndexedDb()
-                .then(res => {
+                .then(() => {
                     let tx = this.db.transaction(this.store, 'readwrite'),
                         store = tx.objectStore(this.store),
                         req = store.add(data);

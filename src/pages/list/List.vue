@@ -1,5 +1,5 @@
 <template lang="html">
-    <div class="home">
+    <div class="list">
 
     </div>
 </template>

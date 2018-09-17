@@ -14,6 +14,10 @@ export default [{
     name: 'home',
     component: () => import('pages/home/Home')
 }, {
+    path: '/list',
+    name: 'list',
+    component: () => import('pages/list/List')
+}, {
     path: '/newQian',
     name: 'newQian',
     component: () => import('pages/qian/NewQian')

@@ -33,7 +33,7 @@ export default {
 .toolbar-new-qian {
     width: 100%;
     height: 100%;
-    box-shadow: -1px 0 1px 1px #ccc;
+    border-top: 1px solid #ccc;
     display: flex;
     justify-content: space-around;
 

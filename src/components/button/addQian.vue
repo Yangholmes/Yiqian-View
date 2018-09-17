@@ -1,7 +1,6 @@
 <template lang="html">
-    <div class="add-qian"
-        :class="{'hide': hide}"
-        :style="`transform: translateX(${delta.x}px) translateY(${delta.y}px) scaleX(${hide ? 0 : 1}) scaleY(${hide ? 0 : 1})`"
+    <div class="add-qian" :class="{'hide': hide}"
+        :style="transform"
         @touchstart="onStart($event)"
         @touchmove="onMove($event)"
         @touchend="onEnd($event)">
@@ -12,17 +11,8 @@
 <script>
 export default {
     props: {
-        position: {x: 0, y: 0}
-    },
-    watch: {
-        '$route'(to) {
-            if (to.name === 'newQian') {
-                this.hide = true;
-            }
-            else {
-                this.hide = false;
-            }
-        }
+        position: {x: 0, y: 0},
+        hide: false
     },
     computed: {
         screenSize() {
@@ -36,15 +26,20 @@ export default {
                 x: this.$el.clientWidth,
                 y: this.$el.clientHeight
             };
+        },
+        transform() {
+            return `transform: translateX(${this.movePosition.x}px) `
+                + `translateY(${this.movePosition.y}px) `
+                + `scale(${this.hide ? 0 : 1});`;
         }
     },
     data() {
         return {
-            hide: false,
             moveEnable: false,
             clickEnable: true,
-            originalPosition: {x: 0, y: 0},
-            delta: {x: 0, y: 0}
+            startPosition: {x: 0, y: 0},
+            movePosition: {x: 0, y: 0},
+            offset: {x: 0, y: 0}
         };
     },
     mounted() {
@@ -52,30 +47,38 @@ export default {
     },
     methods: {
         init() {
-            this.delta = this.position || {x: 0, y: 0};
+            this.movePosition = this.position || {x: 0, y: 0};
         },
         onStart(e) {
             e.preventDefault();
             this.moveEnable = true;
-            this.originalPosition = {
-                x: e.touches[0].clientX - this.delta.x,
-                y: e.touches[0].clientY - this.delta.y
+            this.startPosition = {
+                x: e.touches[0].clientX,
+                y: e.touches[0].clientY
+            };
+            this.offset = {
+                x: this.movePosition.x,
+                y: this.movePosition.y
             };
         },
         onMove(e) {
             if (!this.moveEnable) {
                 return false;
             }
-            this.clickEnable = false;
-            let x = e.touches[0].clientX - this.originalPosition.x;
-            let y = e.touches[0].clientY - this.originalPosition.y;
+            let delta = {
+                x: e.touches[0].clientX - this.startPosition.x,
+                y: e.touches[0].clientY - this.startPosition.y
+            };
+            this.clickEnable = Math.hypot(delta.x, delta.y) < 5;
+            let x = delta.x + this.offset.x;
+            let y = delta.y + this.offset.y;
             x = x > this.screenSize.x - this.size.x
                 ? this.screenSize.x - this.size.x : x;
             x = x > 0 ? x : 0;
             y = y < (this.screenSize.y - this.size.y) * -1
                 ? (this.screenSize.y - this.size.y) * -1 : y;
             y = y < 0 ? y : 0;
-            this.delta = {x, y};
+            this.movePosition = {x, y};
         },
         onEnd(e) {
             e.preventDefault();
@@ -103,6 +106,7 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
+    // transition: transform .1s;
     &.hide {
         transition: transform .2s;
     }

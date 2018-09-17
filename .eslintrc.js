@@ -100,6 +100,6 @@ module.exports = {
         // 回调函数不超过3层
         'max-nested-callbacks': [2, 3],
         // 每行不超过120个字符
-        'max-len': [2, {'code': 120}]
+        'max-len': [1, {'code': 120}]
     }
 };

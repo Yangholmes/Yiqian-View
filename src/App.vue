@@ -1,20 +1,35 @@
 <template>
     <div id="app">
-        <router-view></router-view>
-        <addQian :position="{x: 0, y: -32}"></addQian>
+        <router-view class="main" :class="{'hide': hide}"></router-view>
+        <MainToolbar class="toolbar" :class="{'hide': hide}"></MainToolbar>
+        <AddQian :hide="hide" :position="{x: 16, y: -16 * 4}"></AddQian>
     </div>
 </template>
 
 <script>
-import addQian from 'cpn/button/addQian';
+import AddQian from 'cpn/button/AddQian';
+import MainToolbar from 'cpn/toolbar/MainToolbar.vue';
 
 export default {
     name: 'app',
     components: {
-        addQian
+        AddQian,
+        MainToolbar
     },
     data() {
-        return {};
+        return {
+            hide: false
+        };
+    },
+    watch: {
+        '$route'(to) {
+            if (to.name === 'newQian') {
+                this.hide = true;
+            }
+            else {
+                this.hide = false;
+            }
+        }
     },
     methods: {
 
@@ -28,5 +43,26 @@ export default {
 #app {
     width: 100%;
     height: 100%;
+
+    .main {
+        width: 100%;
+        height: 100%;
+        padding-bottom: 3em;
+        &.hide {
+            padding: 0;
+        }
+    }
+    .toolbar {
+        width: 100%;
+        height: 3em;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        transform: translateY(0);
+        transition: transform .2s;
+        &.hide {
+            transform: translateY(3em);
+        }
+    }
 }
 </style>

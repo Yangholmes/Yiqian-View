@@ -10,13 +10,33 @@ export default {
             indexs: config.indexs
         });
 
-        idbi.insertData(data)
-            .then(res => {
-                console.log(res);
-            })
-            .catch(error => {
-                console.log(error);
-            });
+        return new Promise((resolve, reject) => {
+            idbi.insertData(data)
+                .then(res => {
+                    if (res.type === 'success') {
+                        resolve({
+                            code: 0,
+                            msg: 'insert done',
+                            data: ''
+                        });
+                    }
+                    else {
+                        reject({
+                            code: -1,
+                            msg: 'insert fail',
+                            data: res
+                        });
+                    }
+                })
+                .catch(error => {
+                    reject({
+                        code: -1,
+                        msg: 'insert fail',
+                        data: error
+                    });
+                });
+        });
+
     },
     getAllQian() {
         let idbi = new IDBI(config.name, {
