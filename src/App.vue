@@ -43,6 +43,7 @@ export default {
 #app {
     width: 100%;
     height: 100%;
+    overflow: hidden;
 
     .main {
         width: 100%;
@@ -58,10 +59,10 @@ export default {
         position: absolute;
         bottom: 0;
         left: 0;
-        transform: translateY(0);
-        transition: transform .2s;
+        transform: translateY(0) scale(1);
+        transition: transform .5s;
         &.hide {
-            transform: translateY(3em);
+            transform: translateY(3em) scale(0);
         }
     }
 }

@@ -1,13 +1,12 @@
 <!-- 新堑 -->
 <template lang="html">
-    <transition name="windmill">
+    <transition name="drawer">
         <div id="qian">
             <Head class="head" v-model="head"></Head>
             <Article class="article" v-model="article"></Article>
             <Toolbar class="toolbar"
                 @onCancel="onCancel"
-                @onSubmit="onSubmit"
-            ></Toolbar>
+                @onSubmit="onSubmit"></Toolbar>
         </div>
     </transition>
 </template>
@@ -36,9 +35,26 @@ export default {
     },
     methods: {
         onCancel() {
-            this.$router.go(-1);
+            MessageBox.confirm({
+                message: '不写了吗？内容会被删除哦',
+                cancleText: '继续写',
+                confirmText: '不写了',
+                onCancel() {
+                    console.log('继续写哇');
+                },
+                onConfirm: function () {
+                    this.$router.go(-1);
+                }.bind(this)
+            });
         },
         onSubmit() {
+            if (!this.head.title || !this.article) {
+                MessageBox.info({
+                    message: '写点东西再保存吧',
+                    confirmText: '好'
+                });
+                return false;
+            }
             api.addNewQian({
                 aId: this.aId,
                 title: this.head.title,
@@ -47,7 +63,11 @@ export default {
                 article: this.article,
                 createDate: new Date().getTime()
             }).then(res => {
-                console.log(res);
+                res.code ? MessageBox.info({message: '保存失败了'}) : this.$router.replace('list');
+            }).catch(error => {
+                MessageBox.info({
+                    message: error.msg
+                });
             });
         }
     }
@@ -75,7 +95,7 @@ export default {
     }
 }
 // 过渡
-.windmill {
+.drawer {
     // 0 时刻和 t 时刻
     &-enter,
     &-leave-to {

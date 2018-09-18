@@ -1,7 +1,7 @@
 <template lang="html">
     <div class="flat-button" onselectstart="return false;"
         @touchend="jet">
-        <span class="button-value"><slot>按一下~</slot></span>
+        <span class="button-value"><slot>好</slot></span>
     </div>
 </template>
 

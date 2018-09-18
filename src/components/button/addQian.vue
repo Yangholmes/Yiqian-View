@@ -65,13 +65,9 @@ export default {
             if (!this.moveEnable) {
                 return false;
             }
-            let delta = {
-                x: e.touches[0].clientX - this.startPosition.x,
-                y: e.touches[0].clientY - this.startPosition.y
-            };
-            this.clickEnable = Math.hypot(delta.x, delta.y) < 5;
-            let x = delta.x + this.offset.x;
-            let y = delta.y + this.offset.y;
+            this.clickEnable = false;
+            let x = e.touches[0].clientX - this.startPosition.x + this.offset.x;
+            let y = e.touches[0].clientY - this.startPosition.y + this.offset.y;
             x = x > this.screenSize.x - this.size.x
                 ? this.screenSize.x - this.size.x : x;
             x = x > 0 ? x : 0;
@@ -82,6 +78,11 @@ export default {
         },
         onEnd(e) {
             e.preventDefault();
+            let delta = {
+                x: e.changedTouches[0].clientX - this.startPosition.x,
+                y: e.changedTouches[0].clientY - this.startPosition.y
+            };
+            this.clickEnable = this.clickEnable || Math.hypot(delta.x, delta.y) < 5;
             if (this.clickEnable) {
                 this.$router.push('newQian');
             }

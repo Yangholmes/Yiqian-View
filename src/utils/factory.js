@@ -4,12 +4,12 @@
  * @author Yangholmes
  */
 export default {
-    storeName() {
+    storeName(storeName = 'store') {
         let dt = new Date();
         let year = dt.getFullYear(),
             month = dt.getMonth() + 1,
             date = dt.getDate();
-        return `store{${year}-${month}-${date}:${this.genId()}}`;
+        return `${storeName}{${year}-${month}-${date}:${this.genId()}}`;
     },
     genId() {
         let rId = (Math.random() * 100000).toFixed(0) * 1;
