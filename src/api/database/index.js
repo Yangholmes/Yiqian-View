@@ -46,12 +46,19 @@ export default {
             indexs: config.indexs
         });
 
-        idbi.getAllData()
-            .then(res => {
-                console.log(res);
-            })
-            .catch(error => {
-                console.log(error);
-            });
+        return new Promise((resolve, reject) => {
+            idbi.getAllData()
+                .then(res => {
+                    let data = res.target.result;
+                    resolve({
+                        code: 0,
+                        msg: '',
+                        data
+                    });
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+        });
     }
 };

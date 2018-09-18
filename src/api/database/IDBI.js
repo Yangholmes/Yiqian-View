@@ -27,7 +27,6 @@ class IDBI {
     }
 
     compatibility() {
-        // window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
         if (!window.indexedDB) {
             console.error('Your browser do not support indexedDB');
             return false;
@@ -73,7 +72,7 @@ class IDBI {
     }
 
     setStore(store) {
-        this.store = (store && store.constructor === String) ? store : '';
+        this.store = store && store.constructor === String ? store : '';
     }
 
     insertData(data) {
@@ -100,7 +99,7 @@ class IDBI {
     getAllData() {
         return new Promise((resolve, reject) => {
             this.openIndexedDb()
-                .then(res => {
+                .then(() => {
                     let tx = this.db.transaction(this.store, 'readwrite'),
                         store = tx.objectStore(this.store),
                         req = store.getAll();
