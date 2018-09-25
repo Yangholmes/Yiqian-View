@@ -20,10 +20,14 @@ class IDBI {
 
     initDb() {
         this.db = null;
-        this.store = this.config.store && (this.config.store.constructor === String) ? this.config.store : '';
-        this.key = this.config.key && (this.config.key.constructor === Object) ? this.config.key : {keyPath: null, autoIncrement: false};
-        this.indexs = this.config.indexs && (this.config.indexs.constructor === Array) ? this.config.indexs : [];
-        this.version = this.config.version && (this.config.version.constructor === Number) ? this.config.version : 1;
+        this.store = this.config.store && (this.config.store.constructor === String)
+            ? this.config.store : '';
+        this.key = this.config.key && (this.config.key.constructor === Object)
+            ? this.config.key : {keyPath: null, autoIncrement: false};
+        this.indexs = this.config.indexs && (this.config.indexs.constructor === Array)
+            ? this.config.indexs : [];
+        this.version = this.config.version && (this.config.version.constructor === Number)
+            ? this.config.version : 1;
     }
 
     compatibility() {
@@ -47,7 +51,7 @@ class IDBI {
 
             let DBOpenRequest = window.indexedDB.open(this.name, this.version);
 
-            DBOpenRequest.onsuccess = event => {
+            DBOpenRequest.onsuccess = () => {
                 this.db = DBOpenRequest.result;
                 resolve(this.db);
             };

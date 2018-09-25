@@ -83,7 +83,7 @@ export default {
             }
         },
         chooseMain() {
-            this.input.click();
+            !this.readonly && this.input.click();
         },
         onInputChange() {
             let file = this.input.files[0];

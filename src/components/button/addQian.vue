@@ -3,7 +3,8 @@
         :style="transform"
         @touchstart="onStart($event)"
         @touchmove="onMove($event)"
-        @touchend="onEnd($event)">
+        @touchend="onEnd($event)"
+        @touchcancel="onEnd($event)">
         <span></span>
     </div>
 </template>
@@ -107,6 +108,7 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
+    opacity: .8;
     // transition: transform .1s;
     &.hide {
         transition: transform .2s;

@@ -57,7 +57,11 @@ export default {
                     });
                 })
                 .catch(error => {
-                    console.log(error);
+                    reject({
+                        code: -1,
+                        msg: 'query fail!',
+                        data: error
+                    });
                 });
         });
     }
