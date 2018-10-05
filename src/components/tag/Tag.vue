@@ -29,11 +29,18 @@ export default {
     props: {
         value: {
             type: Array,
-            default: []
+            default() {
+                return [];
+            }
         },
         readonly: {
             type: Boolean,
             default: false
+        }
+    },
+    watch: {
+        value() {
+            this.tags = this.value || [];
         }
     },
     data() {

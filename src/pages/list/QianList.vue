@@ -1,21 +1,22 @@
 <template lang="html">
-    <div class="qian-list">
+    <div class="qian-list" onselectstart="return false;">
         <ul v-if="qianList.length">
             <li v-for="(qian, index) in qianList" :key="index"
-                :class="{'undrag': index !== dragIndex, 'autodrag': autoDrag}"
-                :style="`transform: translateX(${index === dragIndex ? positionX : 0}px);`"
-                @touchstart="onStart($event, index)"
-                @touchmove="onMove($event)"
-                @touchend="onEnd($event)"
-                @touchcancel="onEnd($event)">
-                <div class="content">
+                :class="{'undrag': !dragEnable || dragIndex !== index}"
+                :style="`transform: translateX(${index === dragIndex ? positionX : 0}px);`">
+                <div class="content"
+                    @touchstart="onStart($event, index)"
+                    @touchmove="onMove($event)"
+                    @touchend="onEnd($event)"
+                    @touchcancel="onEnd($event)">
                     <h1 class="title" v-html="qian.title"></h1>
                     <MainImg class="cover" :value="qian.mainImg" :readonly="true"></MainImg>
                     <p class="abstract" v-html="qian.article"></p>
                     <p class="create-date">{{qian.createDate}}</p>
                 </div>
                 <div class="operation">
-
+                    <div class="modify" @touchend="onQianModify(qian.id)">修改</div>
+                    <div class="delete" @touchend="onQianDelete(qian.id)">删除</div>
                 </div>
             </li>
         </ul>
@@ -38,40 +39,64 @@ export default {
     data() {
         return {
             dragEnable: false,
-            autoDrag: false,
             positionStart: 0,
             positionX: 0,
+            offset: 0,
             positionMax: 7,
             dragIndex: null
         };
     },
     methods: {
         onStart(e, index) {
+            // e.preventDefault();
             this.dragEnable = true;
-            this.autoDrag = false;
-            this.dragIndex = index;
-            this.positionX = 0;
             this.positionStart = e.touches[0].clientX;
+            if (this.dragIndex !== index) {
+                this.dragIndex = index;
+                this.offset = 0;
+                this.positionX = 0;
+            }
+            else {
+                this.offset = this.positionX;
+            }
         },
         onMove(e) {
+            // e.preventDefault();
             let delta = e.touches[0].clientX - this.positionStart;
-            delta = (delta + 30) * 0.6;
-            delta = delta <= -1 * this.positionMax * 16 ? -1 * this.positionMax * 16 : delta;
-            if (delta >= 0) {
+            if (delta > -30 && delta < 0) {
                 return false;
             }
-            this.positionX = delta;
+            delta = delta * 0.6;
+            delta = delta <= -1 * this.positionMax * 16 ? -1 * this.positionMax * 16 : delta;
+            delta += this.offset;
+            this.positionX = delta <= 0 ? delta : 0;
+            // console.log(this.positionX);
         },
         onEnd() {
+            // e.preventDefault();
             this.dragEnable = false;
-            if (this.positionX <= -1 * this.positionMax / 3 * 16) {
+            if (this.positionX <= -1 * this.positionMax / 2 * 16) {
                 this.positionX = -1 * this.positionMax * 16;
-                this.autoDrag = true;
             }
             else {
                 this.positionX = 0;
+                this.offset = 0;
                 this.dragIndex = null;
             }
+        },
+        onQianModify(id) {
+            this.jet('onQianModify', id);
+        },
+        onQianDelete(id) {
+            this.jet('onQianDelete', id);
+        },
+        jet(eventName, data) {
+            this.positionX = 0;
+            this.offset = 0;
+            this.dragIndex = null;
+            window.setTimeout(() => {
+                this.$emit(eventName, data);
+            }, 10);
         }
     }
 };
@@ -83,6 +108,7 @@ export default {
     height: 100%;
     overflow: auto;
     background: #fafafa;
+    user-select: none;
     ul {
         width: 100%;
         height: auto;
@@ -92,7 +118,7 @@ export default {
         list-style: none;
 
         li {
-            @operationWidth: 7em;
+            @operationWidth: calc( 7 * 16px );
             width: calc( 100% + @operationWidth );
             margin: .5em 0;
 
@@ -100,13 +126,8 @@ export default {
             flex-direction: row;
 
             background: #fefefe;
-            border-top: 1px solid @borderColor;
-            border-bottom: 1px solid @borderColor;
 
             &.undrag {
-                transition: transform .3s;
-            }
-            &.autodrag {
                 transition: transform .3s;
             }
 
@@ -114,6 +135,9 @@ export default {
                 width: calc( 100% - @operationWidth );
                 height: 8em;
                 padding: .5em 1em;
+
+                border-top: 1px solid @borderColor;
+                border-bottom: 1px solid @borderColor;
 
                 display: grid;
                 grid-template:  "a a"
@@ -138,6 +162,9 @@ export default {
                 h1.title {
                     grid-area: a;
                     font-size: 1.05em;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
                 }
                 .cover {
                     grid-area: b;
@@ -166,7 +193,27 @@ export default {
             .operation {
                 width: @operationWidth;
                 height: auto;
-                background: red;
+
+                & > div {
+                    width: 50%;
+                    height: 100%;
+                    color: #fff;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                }
+
+                .modify {
+                    background: @infoColor;
+                }
+                .delete {
+                    background: @errorColor;
+                }
+
+                display: flex;
+                flex-direction: row;
+                justify-content: center;
+                align-items: center;
             }
         }
     }

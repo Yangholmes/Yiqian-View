@@ -2,7 +2,7 @@
 <template lang="html">
     <div class="head" onselectstart="return false;">
         <div class="title">
-            <input type="text" placeholder="标题取什么好呢？" v-model="title" @change="jet">
+            <input type="text" placeholder="标题取什么好呢？" v-model="title" @input="jet">
         </div>
         <div class="tag">
             <Tag v-model="tags" @modified="jet"></Tag>
@@ -49,10 +49,17 @@ export default {
             mainImg: null
         };
     },
+    watch: {
+        value() {
+            this.title = this.value.title || '';
+            this.tags = this.value.tags || [];
+            this.mainImg = this.value.mainImg || '';
+        }
+    },
     mounted() {
         this.title = this.value.title || '';
         this.tags = this.value.tags || [];
-        this.mainImg = this.value.mainImg || null;
+        this.mainImg = this.value.mainImg || '';
     },
     methods: {
         jet() {

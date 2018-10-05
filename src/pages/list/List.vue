@@ -3,7 +3,7 @@
         <div class="search">
             <input type="text" v-model="keyword" @keydown="onSearch" placeholder="正则搜索">
         </div>
-        <QianList class="qian-list" :qianList="qianList"></QianList>
+        <QianList class="qian-list" :qianList="qianList" @onQianModify="onModify" @onQianDelete="onDelete"></QianList>
     </div>
 </template>
 
@@ -62,6 +62,19 @@ export default {
                 }
                 return a;
             }, []);
+        },
+        onModify(data) {
+            this.$router.push({
+                name: 'newQian',
+                params: {
+                    qian: this.allQian.find(e => e.id === data)
+                }
+            });
+        },
+        onDelete(data) {
+            api.deleteQian(data).then(res => {
+                !res.code && this.onQuery();
+            });
         }
     }
 };

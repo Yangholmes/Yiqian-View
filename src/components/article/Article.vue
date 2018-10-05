@@ -25,6 +25,14 @@ export default {
             default: false
         }
     },
+    watch: {
+        value(val, oldVal) {
+            if (!oldVal && this.article !== this.quill.root.innerHTML) {
+                this.article = this.value;
+                this.quill.root.innerHTML = this.article;
+            }
+        }
+    },
     data() {
         return {
             id: 'editor-' + (Math.random() * 10000).toFixed(0),
@@ -47,11 +55,11 @@ export default {
                     ]
                 }
             });
-            this.article = this.value;
-            this.quill.root.innerHTML = this.article;
             this.quill.on('text-change', this.onChange);
         },
-        onChange() {
+        onChange(delta, oldDelta) {
+            // console.log('article', this.article);
+            // console.log('html', this.quill.root.innerHTML);
             this.article = this.quill.root.innerHTML;
             this.jet();
         },

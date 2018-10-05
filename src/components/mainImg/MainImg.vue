@@ -38,6 +38,11 @@ export default {
             return this.$refs.input;
         }
     },
+    watch: {
+        value() {
+            this.mainImg = this.value || null;
+        }
+    },
     data() {
         return {
             mainImg: null,

@@ -56,6 +56,7 @@ class IDBI {
                 resolve(this.db);
             };
             DBOpenRequest.onupgradeneeded = event => {
+                console.log('upgrade');
                 this.db = event.target.result;
                 if (!this.db.objectStoreNames.contains(this.store)) {
                     let store = this.db.createObjectStore(this.store, {
@@ -107,6 +108,48 @@ class IDBI {
                     let tx = this.db.transaction(this.store, 'readwrite'),
                         store = tx.objectStore(this.store),
                         req = store.getAll();
+
+                    req.onsuccess = event => {
+                        resolve(event);
+                    };
+                    req.onerror = event => {
+                        reject(event);
+                    };
+                })
+                .catch(error => {
+                    reject(error);
+                });
+        });
+    }
+
+    updateData(data) {
+        return new Promise((resolve, reject) => {
+            this.openIndexedDb()
+                .then(() => {
+                    let tx = this.db.transaction(this.store, 'readwrite'),
+                        store = tx.objectStore(this.store),
+                        req = store.put(data);
+
+                    req.onsuccess = event => {
+                        resolve(event);
+                    };
+                    req.onerror = event => {
+                        reject(event);
+                    };
+                })
+                .catch(error => {
+                    reject(error);
+                });
+        });
+    }
+
+    deleteOne(key) {
+        return new Promise((resolve, reject) => {
+            this.openIndexedDb()
+                .then(() => {
+                    let tx = this.db.transaction(this.store, 'readwrite'),
+                        store = tx.objectStore(this.store),
+                        req = store.delete(key);
 
                     req.onsuccess = event => {
                         resolve(event);

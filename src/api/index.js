@@ -6,7 +6,7 @@
  * @author Yangholmes
  */
 import database from './database';
-import network from './network';
+// import network from './network';
 
 export default {
     /**
@@ -17,5 +17,11 @@ export default {
     },
     getAllQian() {
         return database.getAllQian();
+    },
+    updateQian(data) {
+        return database.updateQian(data);
+    },
+    deleteQian(key) {
+        return database.deleteQian(key);
     }
 };

@@ -6,6 +6,8 @@
         @touchend="onEnd($event)"
         @touchcancel="onEnd($event)">
         <span></span>
+        <!-- {{moveEnable}}
+        {{clickEnable}} -->
     </div>
 </template>
 
@@ -31,7 +33,8 @@ export default {
         transform() {
             return `transform: translateX(${this.movePosition.x}px) `
                 + `translateY(${this.movePosition.y}px) `
-                + `scale(${this.hide ? 0 : 1});`;
+                + `scale(${this.hide ? 0 : 1});`
+                + `opacity: ${this.moveEnable ? '1' : '.8'}`;
         }
     },
     data() {
@@ -87,10 +90,8 @@ export default {
             if (this.clickEnable) {
                 this.$router.push('newQian');
             }
-            else {
-                this.clickEnable =true;
-                this.moveEnable = false;
-            }
+            this.clickEnable = true;
+            this.moveEnable = false;
         }
     }
 };
