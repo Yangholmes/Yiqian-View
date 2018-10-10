@@ -1,6 +1,7 @@
 module.exports = {
     // fonts
-    fontFamily: 'SourceHanSansSC, FZHTJW, sans-serif',
+    // fontFamily: 'SourceHanSansSC, FZHTJW, sans-serif',
+    fontFamily: 'FZHTJW, sans-serif',
     // colors
     infoColor: '#7BA4FF', // '#608DFF',
     successColor: '#98E864', // '#84E84C',

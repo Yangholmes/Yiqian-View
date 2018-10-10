@@ -4,4 +4,8 @@ xcopy .\dist ..\framework\www /c /e /y
 
 cd ..\framework
 
-cordova build android
+echo cordova build android
+
+cordova-hcp build
+
+echo deploy finish!
