@@ -4,6 +4,8 @@ import VueRouter from 'vue-router';
 import routes from '@/routes';
 import App from './App.vue';
 
+import './hcp.js';
+
 Vue.use(VueRouter);
 
 Vue.config.productionTip = false;

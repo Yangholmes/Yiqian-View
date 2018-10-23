@@ -12,6 +12,8 @@
 </template>
 
 <script>
+import compress from 'utils/compress.js';
+
 export default {
     model: {
         prop: 'value',
@@ -90,14 +92,16 @@ export default {
         chooseMain() {
             !this.readonly && this.input.click();
         },
-        onInputChange() {
-            let file = this.input.files[0];
+        onInputChange(e) {
+            let file = e.target.files[0];
             if (window.FileReader && file) {
                 let reader = new FileReader();
                 reader.readAsDataURL(file);
                 reader.onloadend = e => {
-                    this.mainImg = e.target.result;
-                    this.jet();
+                    compress.image(e.target.result).then(res => {
+                        this.mainImg = res;
+                        this.jet();
+                    });
                 };
             }
         },

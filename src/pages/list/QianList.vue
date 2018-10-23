@@ -1,18 +1,24 @@
 <template lang="html">
-    <div class="qian-list" onselectstart="return false;">
+    <div class="qian-list" onselectstart="return false;" @scroll="onScroll">
         <ul v-if="qianList.length">
             <li v-for="(qian, index) in qianList" :key="index"
                 :class="{'undrag': !dragEnable || dragIndex !== index}"
-                :style="`transform: translateX(${index === dragIndex ? positionX : 0}px);`">
-                <div class="content"
+                :style="`transform: translateX(${index === dragIndex ? position.x : 0}px);`">
+                <div class="item"
                     @touchstart="onStart($event, index)"
                     @touchmove="onMove($event)"
-                    @touchend="onEnd($event)"
-                    @touchcancel="onEnd($event)">
+                    @touchend="onEnd($event, qian.id)"
+                    @touchcancel="onEnd($event, qian.id)">
                     <h1 class="title" v-html="qian.title"></h1>
-                    <MainImg class="cover" :value="qian.mainImg" :readonly="true"></MainImg>
-                    <p class="abstract" v-html="qian.article"></p>
-                    <p class="create-date">{{qian.createDate}}</p>
+                    <div class="content">
+                        <div class="cover" v-if="qian.mainImg">
+                            <MainImg :value="qian.mainImg" :readonly="true"></MainImg>
+                        </div>
+                        <div class="abstract-date" :class="{'no-cover': !qian.mainImg}">
+                            <p class="abstract" v-html="qian.article"></p>
+                            <p class="create-date">{{qian.createDate}}</p>
+                        </div>
+                    </div>
                 </div>
                 <div class="operation">
                     <div class="modify" @touchend="onQianModify(qian.id)">修改</div>
@@ -38,51 +44,67 @@ export default {
     },
     data() {
         return {
+            scrolling: false,
             dragEnable: false,
-            positionStart: 0,
-            positionX: 0,
+            positionStart: {x: 0, y: 0},
+            delta: 0,
+            position: {x: 0, y: 0},
             offset: 0,
-            positionMax: 7,
+            positionMax: {x: 7, y: 0},
             dragIndex: null
         };
     },
     methods: {
+        onScroll() {
+            this.scrolling = true;
+        },
         onStart(e, index) {
             // e.preventDefault();
             this.dragEnable = true;
-            this.positionStart = e.touches[0].clientX;
+            this.positionStart.x = e.touches[0].clientX;
+            this.positionStart.y = e.touches[0].clientY;
+            // this.position.y = e.touches[0].clientY;
             if (this.dragIndex !== index) {
                 this.dragIndex = index;
                 this.offset = 0;
-                this.positionX = 0;
+                this.position.x = 0;
             }
             else {
-                this.offset = this.positionX;
+                this.offset = this.position.x;
             }
         },
         onMove(e) {
             // e.preventDefault();
-            let delta = e.touches[0].clientX - this.positionStart;
-            if (delta > -30 && delta < 0) {
+            this.delta = e.touches[0].clientX - this.positionStart.x;
+            if (this.delta > -20 && this.delta < 0) {
+                this.delta = 0;
                 return false;
             }
-            delta = delta * 0.6;
-            delta = delta <= -1 * this.positionMax * 16 ? -1 * this.positionMax * 16 : delta;
-            delta += this.offset;
-            this.positionX = delta <= 0 ? delta : 0;
-            // console.log(this.positionX);
+            this.delta = (this.delta + 20) * 0.6;
+            this.delta = this.delta <= -1 * this.positionMax.x * 16 ? -1 * this.positionMax.x * 16 : this.delta;
+            this.delta += this.offset;
+            this.position.x = this.delta <= 0 ? this.delta : 0;
+            // this.position.y = e.touches[0].clientY;
+            // console.log(this.position.x);
         },
-        onEnd() {
+        onEnd(e, id) {
             // e.preventDefault();
-            this.dragEnable = false;
-            if (this.positionX <= -1 * this.positionMax / 2 * 16) {
-                this.positionX = -1 * this.positionMax * 16;
+            if (this.position.x === 0 && this.offset === 0) {
+                // Math.abs(this.positionStart.y - this.position.y) < 15 && this.onQianRead(id);
+                !this.scrolling && this.onQianRead(id);
+                this.scrolling = false;
+            }
+            else if (this.position.x <= -1 * this.positionMax.x / 2 * 16) {
+                this.position.x = -1 * this.positionMax.x * 16;
             }
             else {
-                this.positionX = 0;
+                this.position.x = 0;
                 this.offset = 0;
                 this.dragIndex = null;
             }
+        },
+        onQianRead(id) {
+            this.jet('onQianRead', id);
         },
         onQianModify(id) {
             this.jet('onQianModify', id);
@@ -91,7 +113,7 @@ export default {
             this.jet('onQianDelete', id);
         },
         jet(eventName, data) {
-            this.positionX = 0;
+            this.position.x = 0;
             this.offset = 0;
             this.dragIndex = null;
             window.setTimeout(() => {
@@ -131,20 +153,14 @@ export default {
                 transition: transform .3s;
             }
 
-            .content {
+            .item {
+                @contentHeight: 5.5em;
                 width: calc( 100% - @operationWidth );
                 height: 8em;
                 padding: .5em 1em;
 
                 border-top: 1px solid @borderColor;
                 border-bottom: 1px solid @borderColor;
-
-                display: grid;
-                grid-template:  "a a"
-                                "b c"
-                                "b d";
-                grid-template-columns: 2fr 5fr;
-                grid-template-rows: 2fr 5fr 1fr;
 
                 h1,
                 p {
@@ -160,34 +176,51 @@ export default {
                     }
                 }
                 h1.title {
-                    grid-area: a;
-                    font-size: 1.05em;
+                    font-size: 1em;
+                    width: 100%;
+                    height: calc( ~"8em - 1em - @{contentHeight}" );
                     overflow: hidden;
                     text-overflow: ellipsis;
                     white-space: nowrap;
                 }
-                .cover {
-                    grid-area: b;
-                }
-                p.abstract {
-                    grid-area: c;
-                    // height: calc( 3 * 1.5 * 1em);
-                    line-height: 1.5;
+                .content {
+                    width: 100%;
+                    height: @contentHeight;
                     overflow: hidden;
-                    text-overflow: ellipsis;
-                    display: -webkit-box;
-                    -webkit-line-clamp: 3;
-                    -webkit-box-orient: vertical;
-                    // white-space: nowrap;
-                    padding: .25em 0 .25em .5em;
-                    font-size: .9em;
-                    color: #666;
-                }
-                p.create-date {
-                    grid-area: d;
-                    padding-left: .5em;
-                    font-size: .75em;
-                    color: #999;
+                    display: flex;
+                    justify-content: flex-start;
+                    align-items: flex-start;
+                    .cover {
+                        width: 30%;
+                        height: 100%;
+                        padding-right: .5em;
+                    }
+                    .abstract-date {
+                        width: 70%;
+                        height: 100%;
+                        padding: .25em 0;
+                        &.no-cover {
+                            width: 100%;
+                        }
+                        .abstract {
+                            // height: calc( 100% - 1em );
+                            // padding-bottom: .25em;
+                            line-height: 1.25;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                            display: -webkit-box;
+                            -webkit-line-clamp: 4;
+                            -webkit-box-orient: vertical;
+                            font-size: .9em;
+                            color: #666;
+                        }
+                        .create-date {
+                            // padding-top: .25em;
+                            line-height: 1.5;
+                            font-size: .75em;
+                            color: #999;
+                        }
+                    }
                 }
             }
             .operation {

@@ -6,6 +6,7 @@ const resolve = dir => {
 
 module.exports = {
     baseUrl: process.env.NODE_ENV === 'production' ? '/android_asset/www/' : '/',
+    filenameHashing: false,
     pages: {
         index: {
             // entry for the page

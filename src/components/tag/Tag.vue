@@ -9,7 +9,7 @@
                 @touchend="onTouchend(index)">
                 <span>{{tag}}</span>
             </li>
-            <li>
+            <li class="new" v-if="!readonly">
                 <input type="text" maxlength="10" placeholder="添加标签"
                     v-model="tag"
                     @keydown="onEnter($event)"
@@ -58,6 +58,9 @@ export default {
     },
     methods: {
         onTouchstart() {
+            if (this.readonly) {
+                return false;
+            }
             if (!this.tagShake) {
                 this.hold = window.setTimeout(() => {
                     this.tagShake = true;
@@ -142,12 +145,6 @@ export default {
             display: flex;
             align-items: center;
             justify-content: center;
-
-            &:last-child {
-                margin-right: 0;
-                color: #000;
-                border: 1px dashed @borderColor;
-            }
         }
         li {
             &.delete {
@@ -155,6 +152,11 @@ export default {
                 border-color: @errorColor;
                 background: @errorColor;
                 color: #fff;
+            }
+            &.new {
+                margin-right: 0;
+                color: #000;
+                border: 1px dashed @borderColor;
             }
             @keyframes shake
             {

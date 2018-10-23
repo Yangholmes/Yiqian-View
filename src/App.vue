@@ -23,16 +23,13 @@ export default {
     },
     watch: {
         '$route'(to) {
-            if (to.name === 'newQian') {
+            if (to.name === 'newQian' || to.name === 'readQian') {
                 this.hide = true;
             }
             else {
                 this.hide = false;
             }
         }
-    },
-    methods: {
-
     }
 };
 </script>

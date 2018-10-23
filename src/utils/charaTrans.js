@@ -5,6 +5,11 @@
  * @author yangholmes
  */
 export default {
+    /**
+     * 将字符转换成 html 编码格式
+     * @param  {String} [str=''] [description]
+     * @return {[type]} [description]
+     */
     htmlEncode(str = '') {
         if (str.constructor !== String) {
             return '';
@@ -14,5 +19,14 @@ export default {
         let output = tmpDiv.innerHTML;
         tmpDiv = null;
         return output;
+    },
+
+    htmlDecode(html = '') {
+        if (html.constructor !== HTMLElement) {
+            let container = document.createElement('div');
+            container.innerHTML = html;
+            html = container;
+        }
+        return html.textContent;
     }
 };

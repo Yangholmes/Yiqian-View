@@ -3,7 +3,11 @@
         <div class="search">
             <input type="text" v-model="keyword" @keydown="onSearch" placeholder="正则搜索">
         </div>
-        <QianList class="qian-list" :qianList="qianList" @onQianModify="onModify" @onQianDelete="onDelete"></QianList>
+        <QianList class="qian-list"
+            :qianList="qianList"
+            @onQianRead="onRead"
+            @onQianModify="onModify"
+            @onQianDelete="onDelete"></QianList>
     </div>
 </template>
 
@@ -11,6 +15,7 @@
 import QianList from './QianList';
 
 import charaTrans from 'utils/charaTrans';
+import dtUtils from 'utils/datetime';
 import api from 'api';
 
 export default {
@@ -47,21 +52,24 @@ export default {
             let keyword = charaTrans.htmlEncode(this.keyword);
             this.qianList = this.allQian.reduce((a, qian) => {
                 let title = charaTrans.htmlEncode(qian.title);
-                let article = qian.article
-                    .replace(/(<img.*?\/?>)|(<br\/?>)/g, '') // 去掉图片和空行
-                    .replace(/<[a-z]+?.*?>|<\/[a-z]+?>/g, ''); // 去掉html标签
+                let article = charaTrans.htmlEncode(charaTrans.htmlDecode(qian.article)).replace(/\n|\r/g, '');
                 let createDate = new Date(qian.createDate);
                 if (RegExp(keyword).test(title) || RegExp(keyword).test(article)) {
                     title = title.replace(RegExp(`(${keyword})`), '<em>$1</em>');
-                    article = article.replace(RegExp(`(.*?)(${keyword})(.{0,100})(.*)`), '<em>$2</em>$3');
-                    createDate = `${createDate.getFullYear()}年`
-                        + `${createDate.getMonth() + 1}月`
-                        + `${createDate.getDate()}日 `
-                        + `${createDate.getHours()}:${createDate.getMinutes()}`;
+                    article = article.replace(RegExp(`(.*?)(${keyword})(.{0,150})(.*)`), '<em>$2</em>$3');
+                    createDate = dtUtils.toFormatString(createDate);
                     a.push(Object.assign({}, qian, {title, article, createDate}));
                 }
                 return a;
             }, []);
+        },
+        onRead(data) {
+            this.$router.push({
+                name: 'readQian',
+                params: {
+                    qian: this.allQian.find(e => e.id === data)
+                }
+            });
         },
         onModify(data) {
             this.$router.push({

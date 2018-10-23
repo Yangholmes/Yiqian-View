@@ -1,7 +1,7 @@
 <!-- 新堑 -->
 <template lang="html">
     <transition name="drawer">
-        <div id="qian">
+        <div id="new-qian">
             <Head class="head" v-model="head"></Head>
             <Article class="article" v-model="article"></Article>
             <Toolbar class="toolbar"
@@ -38,7 +38,7 @@ export default {
                     console.log('继续写哇');
                     next(false);
                 },
-                onConfirm: function () {
+                onConfirm() {
                     next();
                 }
             });
@@ -130,7 +130,7 @@ export default {
 </script>
 
 <style lang="less">
-#qian {
+#new-qian {
     @headHeight: 6em;
     @toolbarHeight: 3em;
     width: 100%;

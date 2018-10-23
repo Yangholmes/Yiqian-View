@@ -21,4 +21,8 @@ export default [{
     path: '/newQian',
     name: 'newQian',
     component: () => import('pages/qian/NewQian')
+}, {
+    path: '/readQian',
+    name: 'readQian',
+    component: () => import('pages/qian/ReadQian')
 }];
