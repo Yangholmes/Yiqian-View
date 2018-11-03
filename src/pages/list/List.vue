@@ -56,7 +56,7 @@ export default {
                 let createDate = new Date(qian.createDate);
                 if (RegExp(keyword).test(title) || RegExp(keyword).test(article)) {
                     title = title.replace(RegExp(`(${keyword})`), '<em>$1</em>');
-                    article = article.replace(RegExp(`(.*?)(${keyword})(.{0,150})(.*)`), '<em>$2</em>$3');
+                    article = article.replace(RegExp(`(.*?)(${keyword})(.{0,300})(.*)`), '<em>$2</em>$3');
                     createDate = dtUtils.toFormatString(createDate);
                     a.push(Object.assign({}, qian, {title, article, createDate}));
                 }

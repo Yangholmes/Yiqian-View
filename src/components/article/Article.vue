@@ -6,6 +6,7 @@
 </template>
 
 <script>
+import './newSnow';
 import Quill from 'quill';
 import 'quill/dist/quill.core.css';
 import 'quill/dist/quill.snow.css';
@@ -45,14 +46,19 @@ export default {
     methods: {
         init() {
             this.quill = new Quill('#' + this.id, {
-                theme: 'snow',
+                theme: 'newSnow',
+                syntax: true,
                 placeholder: '今天想写点什么...',
                 modules: {
-                    toolbar: [
-                        ['bold', 'italic', 'image'],
-                        [{'list': 'ordered'}, {'list': 'bullet'}],
-                        [{'color': []}]
-                    ]
+                    toolbar: {
+                        container: [
+                            ['bold', 'italic', 'image'],
+                            [{'list': 'ordered'}, {'list': 'bullet'}],
+                            ['code-block'],
+                            [{'color': []}]
+                            // ['table']
+                        ]
+                    }
                 }
             });
             this.quill.on('text-change', this.onChange);
@@ -88,6 +94,13 @@ export default {
             font-weight: 400;
             img {
                 display: block;
+            }
+            table {
+                border: 1px solid #000;
+                border-collapse: collapse;
+                td {
+                    border: 1px solid #000;
+                }
             }
         }
         &-blank::before {

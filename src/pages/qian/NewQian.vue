@@ -82,6 +82,7 @@ export default {
                 });
                 return false;
             }
+            this.article = this.article.replace(/ ?contenteditable(="true"|="false"|)/g, '');
             !this.id
                 ? api.addNewQian({
                     title: this.head.title,

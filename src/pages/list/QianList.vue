@@ -213,6 +213,7 @@ export default {
                             -webkit-box-orient: vertical;
                             font-size: .9em;
                             color: #666;
+                            word-break: break-word;
                         }
                         .create-date {
                             // padding-top: .25em;

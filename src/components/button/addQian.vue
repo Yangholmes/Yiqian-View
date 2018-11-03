@@ -68,7 +68,6 @@ export default {
             document.body.addEventListener('touchend', this.onEnd, false);
         },
         onMove(e) {
-            console.log('move');
             if (!this.moveEnable) {
                 return false;
             }
